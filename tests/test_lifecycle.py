@@ -527,6 +527,7 @@ class ConfigValidation(unittest.TestCase):
                 ('[source.s.apps.texturecraft]\nrun_args = []\n', ("'s'", "'texturecraft'", "run_args")),
                 ('[source.s.apps.texturecraft]\nrun_args = "mcp"\n', ("'s'", "'texturecraft'", "run_args")),
                 ('[source.s.apps.texturecraft]\nrun_args = ["mcp", 1]\n', ("'s'", "'texturecraft'", "run_args")),
+                ('[source.s.apps.texturecraft]\nrun_args = ["mcp", ""]\n', ("'s'", "'texturecraft'", "run_args")),
                 ('[source.s.apps.texturecraft]\ncli = "x"\n', ("'s'", "'texturecraft'", "'cli'")),
                 ('[source.s.apps.Bad_Slug]\nrun_args = ["mcp"]\n', ("'s'", "Bad_Slug"))):
             with self.assertRaises(SystemExit, msg=body) as e:

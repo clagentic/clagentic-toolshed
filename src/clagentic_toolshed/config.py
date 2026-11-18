@@ -86,7 +86,7 @@ def validate_apps(source: str, apps) -> None:
         for key, val in table.items():
             if key not in APP_KEYS:
                 raise SystemExit(f"{PRODUCT}: source '{source}' app '{slug}': unknown key '{key}'")
-            if not isinstance(val, list) or not val or not all(isinstance(a, str) for a in val):
+            if not isinstance(val, list) or not val or not all(isinstance(a, str) and a for a in val):
                 raise SystemExit(f"{PRODUCT}: source '{source}' app '{slug}': {key} must be a non-empty list of strings")
 
 
