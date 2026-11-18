@@ -53,7 +53,8 @@ sudo deploy/install-timer.sh          # optional: daily update via systemd, runs
 ```
 
 Verify the signing-key fingerprint in the config against more than one official location before
-pinning it (`config.example.toml` lists where ArtCraft publishes theirs).
+pinning it (`config.example.toml` lists where ArtCraft publishes theirs: its website and the
+release assets).
 
 The catalog uses the GitHub API, which allows 60 unauthenticated requests per hour; one refresh
 costs about one request per app. Set `CLAGENTIC_TOOLSHED_GITHUB_TOKEN` (a token with no scopes is
@@ -107,6 +108,26 @@ To add a vendor that publishes differently, subclass `SourceType` in
 
 Not covered yet: signature schemes other than a GPG-signed checksum list (for example cosign-signed
 OCI images).
+
+## Example source: ArtCraft
+
+`config.example.toml` is preconfigured for ArtCraft, the source clagentic: toolshed is first used
+with: the apps listed at [getartcraft.com/apps](https://getartcraft.com/apps), released from the
+[storytold](https://github.com/storytold) GitHub org. These four apps launch with the example
+`run_args` (`mcp --automation-read-root DIR --automation-write-root DIR`) and publish the release
+assets the vetting step needs:
+
+| App | What it does | Formats | Repo |
+|---|---|---|---|
+| WordCraft | Fast, open-source word processing, rebuilt in pure Rust. | DOCX read/write; ODT, RTF, HTML, MD, TeX, TXT import/export; PDF export | [storytold/wordcraft](https://github.com/storytold/wordcraft) |
+| DeckCraft | Build and deliver dynamic slide presentations, in pure Rust. | PPTX open/save; PDF and PNG/JPEG export | [storytold/deckcraft](https://github.com/storytold/deckcraft) |
+| SoundCraft | Professional audio recording, editing and mixing in pure Rust. | WAV/BWF/RF64, AIFF/AIFC, FLAC in and out; MP3, Ogg Vorbis, AAC, ALAC, CAF in | [storytold/soundcraft](https://github.com/storytold/soundcraft) |
+| VectorCraft | Fast, open-source vector illustration, reimagined in pure Rust. | SVG, PDF (and PDF-compatible .ai) import/export | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) |
+
+The directory lists more apps. Only these four have been checked against this config. An app that
+names its MCP flags differently needs its own launch arguments, which a source does not support yet
+(`run_args` is per source, not per app). ArtCraft is an example, not a dependency: any source that
+fits the layout above works the same way.
 
 ## Threat model
 
