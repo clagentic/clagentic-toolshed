@@ -1,0 +1,19 @@
+# Tracked merge gate for this repo. loadout-merge reads it from the PR's BASE
+# commit, so a PR is judged by the gate that existed before it and a change to
+# this file takes effect from the next merge. Only keys loadout treats as gate
+# keys belong here (required_reviewer_roles, required_scanners, pre_checks,
+# required_ci_checks, ci_strict, evaluator); everything else stays in
+# config.yaml.
+merge:
+  # Both a clean reviewer verdict and a clean security verdict are required.
+  # Role names, not agent names: the deployment maps them to callers.
+  required_reviewer_roles: [reviewer, security]
+
+  # .github/workflows/test.yml runs the `test` job once per Python version in
+  # its matrix, and GitHub names each check run `test (<version>)`. Naming all
+  # three makes a skipped or absent run on any version fail the gate; keep this
+  # list in step with the workflow's matrix.
+  required_ci_checks:
+    - test (3.11)
+    - test (3.12)
+    - test (3.13)

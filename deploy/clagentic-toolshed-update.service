@@ -1,0 +1,17 @@
+[Unit]
+Description=clagentic-toolshed: refresh catalog and update installed apps
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# The user that owns the data dir and config; it needs access to the Docker daemon.
+User=@USER@
+SyslogIdentifier=clagentic-toolshed
+Environment=PYTHONPATH=@REPO@/src
+Environment=CLAGENTIC_TOOLSHED_HOME=@HOME@
+Environment=CLAGENTIC_TOOLSHED_CONFIG=@CONFIG@
+# Optional, e.g. CLAGENTIC_TOOLSHED_GITHUB_TOKEN=<token with no scopes> to raise the GitHub API
+# rate limit. Keep the file mode 600.
+EnvironmentFile=-/etc/clagentic/toolshed/env
+ExecStart=/usr/bin/python3 -m clagentic_toolshed update

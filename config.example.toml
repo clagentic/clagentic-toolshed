@@ -1,0 +1,42 @@
+# Copy to ~/.config/clagentic/toolshed/config.toml (or set CLAGENTIC_TOOLSHED_CONFIG).
+
+# A source is a vendor whose apps are listed on a directory page and released from a GitHub org.
+# Discovery only ever looks inside the pinned org, and only trusts releases whose checksum list is
+# signed by the pinned primary-key fingerprint. Verify the fingerprint out of band before pinning.
+# ArtCraft publishes this one at https://getartcraft.com/keys/artcraft.asc and on
+# https://getartcraft.com/linux ("ArtCraft Linux Release Signing Key"), and ships the same key as
+# release-signing-key.asc in every release.
+[source.artcraft]
+type = "github-org-directory"
+org = "storytold"
+directory_url = "https://getartcraft.com/apps"
+# do not copy; verify per README before pinning
+signing_key_fingerprint = "2B76 741B 414A AD6C D33E  6312 13A0 05C0 B9D7 C3ED"
+platform = "linux-x86_64"
+# Release conventions (shown with their defaults; override per source as needed):
+# tarball           = "{slug}-{version}-{platform}.tar.gz"
+# archive_root      = "{slug}-{version}-{platform}"
+# checksums         = "SHA256SUMS.txt"
+# signature         = "SHA256SUMS.txt.asc"
+# signing_key_asset = "release-signing-key.asc"
+# cli               = "bin/{slug}-cli"
+# api_url           = "https://api.github.com"
+# web_url           = "https://github.com"
+# How the app starts an MCP stdio server and is told which directories it may touch:
+run_args = ["mcp", "--automation-read-root", "{read}", "--automation-write-root", "{write}"]
+
+[runtime]
+# docker_host = "ssh://user@host"   # empty/unset = local daemon (agents' files must be on that host)
+# The image the app runs in. A tag can be re-pointed upstream; pin a digest so every run uses the
+# image you checked, e.g. base_image = "debian:bookworm-slim@sha256:<digest>"
+# (docker buildx imagetools inspect debian:bookworm-slim prints the current one).
+base_image = "debian:bookworm-slim"
+memory = "512m"
+pids = 128
+uid = 65534
+probe_timeout = 90
+tmpfs_size = "64m"   # the container's writable /tmp
+# Extra `docker run --security-opt` values, appended to the defaults. Only for hosts where Docker
+# cannot load AppArmor profiles; this weakens the sandbox (a warning is printed on every command),
+# so leave unset otherwise.
+# extra_security_opts = ["apparmor=unconfined"]

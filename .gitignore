@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Test / lint caches and coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+
+# Local config, env and secrets
+config.toml
+.env
+*.env
+!.env.example
+*.key
+*.pem
+secrets/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Agent scratch (a backstop; per-spawn TMPDIR is the rule)
+pr-body-*
+.pr-body-*
+*-scratch-*
+.scratch*/
+.commit-msg-*
+.homecheck-*
+*.diff-check*
+HANDOFF.md

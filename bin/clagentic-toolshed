@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run from a checkout without installing (pip install . provides the same command).
+here=$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)
+PYTHONPATH="$here/src${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m clagentic_toolshed "$@"

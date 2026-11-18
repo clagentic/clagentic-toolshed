@@ -1,0 +1,43 @@
+# .clagentic/loadout/config.yaml: repo-local loadout config for this repo.
+#
+# Built from clagentic-loadout's starter template
+# (src/clagentic_loadout/loadout_init/starter_config.yaml). The merge gate
+# roles (required_reviewer_roles) are gate keys and live in the tracked
+# gate.yaml, read from the PR base commit. No machine values (HOME, host
+# paths, forge URLs) appear here.
+
+# Which loadout verbs each role may invoke. Role vocabulary only, never an
+# agent name. Every role named in gate.yaml or authorized_roles below has a
+# verb set here, so the gate is satisfiable.
+roles:
+  builder:
+    - push
+  reviewer:
+    - git-host-api
+    - review-post
+    - stage-body
+  security:
+    - git-host-api
+    - review-post
+    - stage-body
+  merger:
+    - merge
+    - push
+    - release-dispatch
+    - release-detect
+  lead:
+    - git-host-api
+
+merge:
+  # Only the merger role holds merge authority.
+  authorized_roles:
+    - merger
+  # No post_merge_steps: nothing on a host is deployed from this repo's
+  # merges. Users install releases themselves (pip install / bin/).
+
+push:
+  # Refuse a push while another unit of work is in flight in this checkout.
+  contention_check: true
+  # Keep internal work-item ids out of PR titles and commit subjects, which
+  # become public history once merged.
+  task_id_guard_pattern: "\\blr-[0-9a-f]{4,6}\\b"

@@ -1,0 +1,37 @@
+[project]
+name = "clagentic_toolshed"
+dynamic = ["version"]
+description = "Vetted, sandboxed, self-updating registry of agent-drivable CLI/MCP apps."
+readme = "README.md"
+# FSL-1.1-MIT has no SPDX identifier yet; LICENSE is authoritative.
+license = "LicenseRef-FSL-1.1-MIT"
+license-files = ["LICENSE"]
+keywords = ["agents", "mcp", "sandbox", "supply-chain", "developer-tools"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+]
+# 3.11.4 is the first 3.11 release with tarfile extraction filters (extractall filter="data").
+requires-python = ">=3.11.4"
+dependencies = []
+
+[project.urls]
+Homepage = "https://clagentic.ai"
+Repository = "https://github.com/clagentic/clagentic-toolshed"
+Documentation = "https://github.com/clagentic/clagentic-toolshed#readme"
+
+[project.scripts]
+clagentic-toolshed = "clagentic_toolshed.cli:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "clagentic_toolshed.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

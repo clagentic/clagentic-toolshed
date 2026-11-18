@@ -1,0 +1,31 @@
+# Repo profile: the shape this repository must keep. Drafted with
+# `loadout-profile init`, then filled in. This repository ships as a released
+# tool, so no environment-specific values (agent or deployment names, hosts,
+# usernames, absolute host paths) may appear in what ships.
+class: released-tool
+# Risk posture, read by gates from the merge base. A CLI that runs locally
+# with no network listener, holds no private data, is published, and merges
+# only after the reviewer and security roles in gate.yaml have signed off.
+exposure: local_or_ci_only
+data: public_or_none
+visibility: public
+merge_control: review_required
+confirmed_at: 2026-11-18
+review:
+  # The lighter docs-only review is open to a change that touches only these
+  # paths. The files under depended_on are read as instructions by agents, so a
+  # change to one of them is reviewed as code.
+  docs_only:
+    paths: ["README.md", "CHANGELOG.md"]
+    depended_on: ["CLAUDE.md", "skills/clagentic-toolshed/SKILL.md"]
+paths:
+  # Deployment tooling config, tracked by precedent; not part of what ships.
+  ".clagentic/**": {class: internal}
+  ".crew/**": {class: internal}
+  ".lore": {class: internal}
+# What `clagentic-loadout test run` executes. The suite is plain unittest;
+# pytest only runs it to write the JUnit report and is never imported by the
+# package.
+test:
+  full: [python3, -m, pytest, -q, tests, "--junitxml={junit}"]
+  files: [python3, -m, pytest, -q, "--junitxml={junit}"]
