@@ -69,6 +69,27 @@ def validate_runtime(runtime: dict) -> dict:
     return rt
 
 
+APP_KEYS = ("run_args",)  # the only per-app override today
+
+
+def validate_apps(source: str, apps) -> None:
+    """Check a [source.<name>.apps.<slug>] table. Raises SystemExit naming source, slug and key."""
+    from . import sources as source_types  # late import: sources imports config
+
+    if not isinstance(apps, dict):
+        raise SystemExit(f"{PRODUCT}: source '{source}': apps must be a table of [source.{source}.apps.<slug>]")
+    for slug, table in apps.items():
+        if not source_types.SLUG_RE.match(slug):
+            raise SystemExit(f"{PRODUCT}: source '{source}': apps slug {slug!r} is not a valid app slug")
+        if not isinstance(table, dict):
+            raise SystemExit(f"{PRODUCT}: source '{source}' app '{slug}': must be a table")
+        for key, val in table.items():
+            if key not in APP_KEYS:
+                raise SystemExit(f"{PRODUCT}: source '{source}' app '{slug}': unknown key '{key}'")
+            if not isinstance(val, list) or not val or not all(isinstance(a, str) and a for a in val):
+                raise SystemExit(f"{PRODUCT}: source '{source}' app '{slug}': {key} must be a non-empty list of strings")
+
+
 def load(path: str | None = None) -> dict:
     p = config_path(path)
     if not p.is_file():
@@ -96,6 +117,7 @@ def load(path: str | None = None) -> dict:
         missing = [k for k in handler.required if not src.get(k)]
         if missing:
             raise SystemExit(f"{PRODUCT}: source '{name}' missing keys: {', '.join(missing)}")
+        validate_apps(name, src.get("apps", {}))
         merged[name] = {**handler.defaults, **src}
     cfg["source"] = merged
     return cfg

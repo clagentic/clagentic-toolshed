@@ -32,6 +32,12 @@ SIGNED_RELEASE_DEFAULTS = {
 }
 
 
+def effective_run_args(source: dict, slug: str) -> list[str]:
+    """Launch arguments for one app: its [source.<name>.apps.<slug>] override, else the source's."""
+    override = (source.get("apps") or {}).get(slug, {}).get("run_args")
+    return list(override if override is not None else source["run_args"])
+
+
 class TransientError(Exception):
     """The source could not be read right now (network, server error, rate limit). Not a verdict on
     any release: the catalog keeps what it knew. rate_limited means further calls will fail too."""

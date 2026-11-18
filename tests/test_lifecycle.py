@@ -228,6 +228,29 @@ class Lifecycle(LifecycleBase):
         self.assertEqual(self.state()["current"], "1.0.0")
         self.assertEqual(self.held_version(), "1.0.1")
 
+    def test_per_app_run_args_override_applies_with_source_fallback(self):
+        override = ["mcp", "--read-root", "{read}", "--write-root", "{write}"]
+        self.cfg["source"]["fake"]["apps"] = {"app": {"run_args": override}}
+        self.world.release("app", "1.0.0", ["read"])
+        self.world.release("plain", "1.0.0", ["read"])
+        self.assertEqual(install.install(self.cfg, "app")["run_args"], override)
+        self.assertEqual(install.install(self.cfg, "plain")["run_args"], ["mcp"])
+
+    def test_run_args_change_is_held_unchanged_promotes(self):
+        self.world.release("app", "1.0.0", ["read"])
+        install.install(self.cfg, "app")
+        self.world.release("app", "1.1.0", ["read"])
+        install.update(self.cfg)  # same run_args: existing policy promotes
+        self.assertEqual(self.state()["current"], "1.1.0")
+        for apps in ({"app": {"run_args": ["mcp", "--x"]}}, {}):  # override added, then removed
+            self.cfg["source"]["fake"]["apps"] = apps
+            ver = f"{int(self.state()['current'].split('.')[0]) + 1}.0.0"
+            self.world.release("app", ver, ["read"])
+            log = install.update(self.cfg)
+            self.assertTrue(any(f"HELD {ver}" in ln and "launch arguments changed" in ln for ln in log), log)
+            install.approve(self.cfg, "app")
+            self.assertEqual(self.state()["current"], ver)
+
     def test_path_like_slug_is_flagged_and_never_staged(self):
         self.world.extra_slugs = ["../x"]
         cat, _ = catalog.refresh(self.cfg)
@@ -494,6 +517,23 @@ class ConfigValidation(unittest.TestCase):
         with self.assertRaises(SystemExit) as e:
             self.load('[source.s]\ntype = "github-org-directory"\norg = "o"\n')
         self.assertIn("missing keys", str(e.exception))
+
+    def test_per_app_override_validation_table(self):
+        head = '[source.s]\ntype = "fake"\nsigning_key_fingerprint = "AA"\n'
+        ok = self.load(head + '[source.s.apps.texturecraft]\nrun_args = ["mcp", "--read-root", "{read}"]\n')
+        self.assertEqual(sources.effective_run_args(ok["source"]["s"], "texturecraft")[1], "--read-root")
+        self.assertEqual(sources.effective_run_args(ok["source"]["s"], "other"), ["mcp"])
+        for body, needles in (
+                ('[source.s.apps.texturecraft]\nrun_args = []\n', ("'s'", "'texturecraft'", "run_args")),
+                ('[source.s.apps.texturecraft]\nrun_args = "mcp"\n', ("'s'", "'texturecraft'", "run_args")),
+                ('[source.s.apps.texturecraft]\nrun_args = ["mcp", 1]\n', ("'s'", "'texturecraft'", "run_args")),
+                ('[source.s.apps.texturecraft]\nrun_args = ["mcp", ""]\n', ("'s'", "'texturecraft'", "run_args")),
+                ('[source.s.apps.texturecraft]\ncli = "x"\n', ("'s'", "'texturecraft'", "'cli'")),
+                ('[source.s.apps.Bad_Slug]\nrun_args = ["mcp"]\n', ("'s'", "Bad_Slug"))):
+            with self.assertRaises(SystemExit, msg=body) as e:
+                self.load(head + body)
+            for n in needles:
+                self.assertIn(n, str(e.exception))
 
     def test_no_sources_rejected(self):
         with self.assertRaises(SystemExit):
