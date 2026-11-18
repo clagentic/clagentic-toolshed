@@ -3,9 +3,9 @@
 # A source is a vendor whose apps are listed on a directory page and released from a GitHub org.
 # Discovery only ever looks inside the pinned org, and only trusts releases whose checksum list is
 # signed by the pinned primary-key fingerprint. Verify the fingerprint out of band before pinning.
-# ArtCraft publishes this one at https://getartcraft.com/keys/artcraft.asc and on
-# https://getartcraft.com/linux ("ArtCraft Linux Release Signing Key"), and ships the same key as
-# release-signing-key.asc in every release.
+# ArtCraft publishes this one at https://getartcraft.com/keys/artcraft.asc and ships a key as
+# release-signing-key.asc in its app releases. Compare both against the pinned fingerprint.
+# See "Example source: ArtCraft" in the README for the apps this source is used with.
 [source.artcraft]
 type = "github-org-directory"
 org = "storytold"
