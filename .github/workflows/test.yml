@@ -9,7 +9,9 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  unit:
+    # Keeps the per-version check names `test (3.x)`.
+    name: test (${{ matrix.python }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,3 +29,18 @@ jobs:
           python -m pip install .
           clagentic-toolshed --version
           clagentic-toolshed --help
+
+  # Single stable check name for branch protection and the merge gate; if()
+  # makes it run, and fail, when a matrix leg fails or is cancelled.
+  test:
+    name: test
+    needs: [unit]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every matrix leg to pass
+        run: |
+          if [ "${{ needs.unit.result }}" != "success" ]; then
+            echo "matrix result: ${{ needs.unit.result }}"
+            exit 1
+          fi

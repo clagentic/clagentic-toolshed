@@ -9,11 +9,9 @@ merge:
   # Role names, not agent names: the deployment maps them to callers.
   required_reviewer_roles: [reviewer, security]
 
-  # .github/workflows/test.yml runs the `test` job once per Python version in
-  # its matrix, and GitHub names each check run `test (<version>)`. Naming all
-  # three makes a skipped or absent run on any version fail the gate; keep this
-  # list in step with the workflow's matrix.
+  # `test` is the aggregate job in .github/workflows/test.yml: it runs after
+  # every Python matrix leg (`test (<version>)`) and fails unless all of them
+  # succeeded. It is also the context main's branch protection requires, so one
+  # name covers the gate, the protection rule and any change to the matrix.
   required_ci_checks:
-    - test (3.11)
-    - test (3.12)
-    - test (3.13)
+    - test
