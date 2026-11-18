@@ -24,6 +24,9 @@ platform = "linux-x86_64"
 # web_url           = "https://github.com"
 # How the app starts an MCP stdio server and is told which directories it may touch:
 run_args = ["mcp", "--automation-read-root", "{read}", "--automation-write-root", "{write}"]
+# Use a per-app table when one app in this source names its MCP flags differently:
+# [source.artcraft.apps.texturecraft]
+# run_args = ["mcp", "--read-root", "{read}", "--write-root", "{write}"]
 
 [runtime]
 # docker_host = "ssh://user@host"   # empty/unset = local daemon (agents' files must be on that host)

@@ -72,8 +72,9 @@ class Catalog(unittest.TestCase):
 
 
 class Policy(unittest.TestCase):
-    def rec(self, tools, surface="s1", fpr="F", repo="o/a"):
-        return {"tools": tools, "surface_sha256": surface, "fingerprint": fpr, "repo": repo}
+    def rec(self, tools, surface="s1", fpr="F", repo="o/a", run_args=("mcp",)):
+        return {"tools": tools, "surface_sha256": surface, "fingerprint": fpr, "repo": repo,
+                "run_args": list(run_args)}
 
     def test_unchanged_promotes(self):
         self.assertEqual(install.decide(self.rec(["a"]), self.rec(["a"])), (True, []))
@@ -91,6 +92,11 @@ class Policy(unittest.TestCase):
     def test_signer_or_repo_change_holds(self):
         self.assertFalse(install.decide(self.rec(["a"]), self.rec(["a"], fpr="G"))[0])
         self.assertFalse(install.decide(self.rec(["a"]), self.rec(["a"], repo="x/a"))[0])
+
+    def test_run_args_change_holds(self):
+        ok, why = install.decide(self.rec(["a"]), self.rec(["a"], run_args=("mcp", "--x")))
+        self.assertFalse(ok)
+        self.assertIn("launch arguments changed", why[0])
 
 
 class Sandbox(unittest.TestCase):

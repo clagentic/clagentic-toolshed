@@ -5,6 +5,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Per-app `run_args` override**: `[source.<name>.apps.<slug>] run_args = [...]` gives one app its
+  own launch arguments when its MCP flags differ from the rest of its source. It is validated at
+  config load and applied when the app is staged and probed.
+
+### Changed
+
+- **Update policy**: an update whose effective `run_args` differ from the installed version's is
+  held for `approve`, even when tool surface, signer and repo are unchanged.
+
 ## [0.1.0] - 2026-11-18
 
 Initial public release.

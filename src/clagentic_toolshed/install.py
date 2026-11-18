@@ -93,7 +93,7 @@ def stage(cfg: dict, entry: dict) -> dict:
             "slug": slug, "version": ver, "tag": entry["tag"], "source": entry["source"],
             "repo": entry["repo"], "fingerprint": vet.norm_fpr(source["signing_key_fingerprint"]),
             "tarball": tarball, "tarball_sha256": expected,
-            "cli": cli, "run_args": list(source["run_args"]),
+            "cli": cli, "run_args": sources.effective_run_args(source, slug),
             "cli_sha256": sandbox.file_sha256(cli_path),
             "app_dir": str(final), "staged_at": _now(),
         }
@@ -151,7 +151,7 @@ def _drop_hold(cfg: dict, hold: dict, slug: str) -> None:
 
 
 def decide(prev: dict, new: dict) -> tuple[bool, list[str]]:
-    """Auto-promote policy: same signer, same repo, identical MCP tool surface."""
+    """Auto-promote policy: same signer, same repo, identical MCP tool surface, same launch arguments."""
     reasons: list[str] = []
     if new["surface_sha256"] != prev["surface_sha256"]:
         pt, nt = set(prev["tools"]), set(new["tools"])
@@ -166,6 +166,8 @@ def decide(prev: dict, new: dict) -> tuple[bool, list[str]]:
         reasons.append("signing key changed")
     if new["repo"] != prev["repo"]:
         reasons.append("source repo changed")
+    if new["run_args"] != prev["run_args"]:
+        reasons.append(f"launch arguments changed: {prev['run_args']} -> {new['run_args']}")
     return (not reasons, reasons)
 
 

@@ -113,9 +113,10 @@ OCI images).
 
 `config.example.toml` is preconfigured for ArtCraft, the source clagentic: toolshed is first used
 with: the apps listed at [getartcraft.com/apps](https://getartcraft.com/apps), released from the
-[storytold](https://github.com/storytold) GitHub org. These four apps launch with the example
-`run_args` (`mcp --automation-read-root DIR --automation-write-root DIR`) and publish the release
-assets the vetting step needs:
+[storytold](https://github.com/storytold) GitHub org. The first four apps below launch with the
+example `run_args` (`mcp --automation-read-root DIR --automation-write-root DIR`); TextureCraft and
+MaterialCraft need the per-app override described below. All six publish the release assets the
+vetting step needs:
 
 | App | What it does | Formats | Repo |
 |---|---|---|---|
@@ -123,10 +124,25 @@ assets the vetting step needs:
 | DeckCraft | Build and deliver dynamic slide presentations, in pure Rust. | PPTX open/save; PDF and PNG/JPEG export | [storytold/deckcraft](https://github.com/storytold/deckcraft) |
 | SoundCraft | Professional audio recording, editing and mixing in pure Rust. | WAV/BWF/RF64, AIFF/AIFC, FLAC in and out; MP3, Ogg Vorbis, AAC, ALAC, CAF in | [storytold/soundcraft](https://github.com/storytold/soundcraft) |
 | VectorCraft | Fast, open-source vector illustration, reimagined in pure Rust. | SVG, PDF (and PDF-compatible .ai) import/export | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) |
+| TextureCraft | An open-source, 3D texture painting workflow written from scratch in pure Rust. | See the app README | [storytold/texturecraft](https://github.com/storytold/texturecraft) |
+| MaterialCraft | An open-source, node-based material designer written from scratch in pure Rust. | See the app README | [storytold/materialcraft](https://github.com/storytold/materialcraft) |
 
-The directory lists more apps. Only these four have been checked against this config. An app that
-names its MCP flags differently needs its own launch arguments, which a source does not support yet
-(`run_args` is per source, not per app). ArtCraft is an example, not a dependency: any source that
+TextureCraft and MaterialCraft start with `mcp --read-root DIR --write-root DIR`, so they need the
+per-app override below.
+
+The directory lists more apps. Only these six have been checked against this config. An app that
+names its MCP flags differently takes its own launch arguments in a per-app table, which replaces
+the source's `run_args` for that app only:
+
+```toml
+[source.artcraft.apps.texturecraft]
+run_args = ["mcp", "--read-root", "{read}", "--write-root", "{write}"]
+```
+
+The list must be non-empty strings, and the key is the app slug. Apps without a table use the
+source's `run_args`. Because launch arguments are part of what runs in the sandbox, an update whose
+effective `run_args` differ from the installed version's is held for `approve`, even when the tool
+surface, signer and repo are unchanged. ArtCraft is an example, not a dependency: any source that
 fits the layout above works the same way.
 
 ## Threat model
