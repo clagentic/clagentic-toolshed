@@ -119,10 +119,10 @@ assets the vetting step needs:
 
 | App | What it does | Formats | Repo |
 |---|---|---|---|
-| WordCraft | Fast, open-source word processing, rebuilt in pure Rust. | DOCX read/write; ODT, RTF, HTML, MD, TeX; PDF out | [storytold/wordcraft](https://github.com/storytold/wordcraft) |
-| DeckCraft | Build and deliver dynamic slide presentations, in pure Rust. | PPTX open/save; PDF and slide-image out | [storytold/deckcraft](https://github.com/storytold/deckcraft) |
-| SoundCraft | Professional audio recording, editing and mixing in pure Rust. | WAV, AIFF, FLAC; MP3, AAC import | [storytold/soundcraft](https://github.com/storytold/soundcraft) |
-| VectorCraft | Fast, open-source vector illustration, reimagined in pure Rust. | SVG, PDF import/export | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) |
+| WordCraft | Fast, open-source word processing, rebuilt in pure Rust. | DOCX read/write; ODT, RTF, HTML, MD, TeX, TXT import/export; PDF export | [storytold/wordcraft](https://github.com/storytold/wordcraft) |
+| DeckCraft | Build and deliver dynamic slide presentations, in pure Rust. | PPTX open/save; PDF and PNG/JPEG export | [storytold/deckcraft](https://github.com/storytold/deckcraft) |
+| SoundCraft | Professional audio recording, editing and mixing in pure Rust. | WAV/BWF/RF64, AIFF/AIFC, FLAC in and out; MP3, Ogg Vorbis, AAC, ALAC, CAF in | [storytold/soundcraft](https://github.com/storytold/soundcraft) |
+| VectorCraft | Fast, open-source vector illustration, reimagined in pure Rust. | SVG, PDF (and PDF-compatible .ai) import/export | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) |
 
 The directory lists more apps. Only these four have been checked against this config. An app that
 names its MCP flags differently needs its own launch arguments, which a source does not support yet
