@@ -34,21 +34,21 @@
   <rect x="142" y="8" width="96" height="96" rx="8" ry="8"
         fill="none" stroke="url(#grad2)" stroke-width="4.5"/>
 
-  <!-- Shed: peaked roof over two walls and a floor line, X-braced barn door in the
-       middle (dimmed brace) -- a vetted place agents' tools are kept and checked out from. -->
+  <!-- Lean-to shed: one single-slope roof (high left, low right) over two walls of
+       different height and a floor line; the front stays closed, with an open-jaw
+       wrench set diagonally on it -- the tools are kept inside. -->
 
   <!-- Roof -->
-  <polyline points="156,52 190,26 224,52"
-            fill="none" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="154" y1="36" x2="226" y2="52"
+        stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 
   <!-- Walls and floor -->
-  <polyline points="166,45 166,86 214,86 214,45"
+  <polyline points="164,38 164,88 216,88 216,50"
             fill="none" stroke="url(#grad2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- Barn door with X brace -->
-  <rect x="178" y="58" width="24" height="28" rx="1.5" ry="1.5"
-        fill="none" stroke="url(#grad2)" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M 178 58 L 202 86 M 202 58 L 178 86"
-        fill="none" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+  <!-- Open-end wrench outline: straight handle with a rounded butt, widening into a
+       head whose jaw is a U notch, on the diagonal lower-left to upper-right -->
+  <path d="M 174.13 76.01 L 186.19 64.45 L 187.20 58.30 L 195.84 50.02 L 198.60 52.90 L 192.84 58.42 L 198.36 64.18 L 204.12 58.66 L 206.88 61.54 L 198.24 69.82 L 192.05 70.57 L 180.00 82.13 A 4.25 4.25 0 0 1 174.13 76.01 Z"
+        fill="none" stroke="url(#grad2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 
 </svg>
